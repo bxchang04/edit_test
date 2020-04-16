@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Edit mode test</title>
+    <link rel="stylesheet" href="edit.css">
+</head>
+</head>
+<body>
+  <div id="canvas" class="canvas">
+    <div id="component" class="resize-drag" onblur="exitEdit()"> </div>
+  </div>
+
+</body>
+</html>
+
+<script>
+
+// Edit mode - Handle double click input
+document.getElementById('canvas').onclick = event => {
+   if (event.detail === 1) {
+     // it was a single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesnt'.
+     if(document.activeElement === document.getElementById('canvas')){
+        exitEdit(); // this function is buggy
+     }
+   } else if (event.detail === 2) {
+     enterEdit();
+   }
+};
+
+// Edit mode - Handle keyboard input
+document.addEventListener("keydown", editKeyDown);
+
+function editKeyDown(e) {
+  console.log("editKeyDown");
+  if(event.key === "F2"){
+    console.log("f2");
+    enterEdit();
+  }
+
+  // This should cancel edits as well -- research this
+  if(event.key === "Escape"){
+    console.log("esc");
+    exitEdit();
+  }
+}
+
+// Toggle edit mode. TEST -- does this work for SVGs?
+function enterEdit(e) {
+  console.log("edit");
+  document.activeElement.contentEditable = true;
+  document.activeElement.focus();
+}
+
+// Blur behavior. Will this work for SVGs?
+function exitEdit() {
+  console.log("blur");
+  document.activeElement.contentEditable = false;
+  document.activeElement.blur();
+}
+
+
+</script>
