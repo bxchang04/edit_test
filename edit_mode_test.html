@@ -5,44 +5,65 @@
     <title>Edit mode test</title>
     <link rel="stylesheet" href="edit.css">
 </head>
-</head>
 <body>
   <div id="canvas" class="canvas">
-    <div id="component" class="resize-drag" onblur="exitEdit()"> </div>
+    <div class="browser item"> <!--browser-->
+      <div class="browser__header">
+        <h2 class="browser__title">Webpage title</h2>
+        <svg class="icon"><use href="#icon-minus"></use></svg>
+        <svg class="icon"><use href="#icon-square"></use></svg>
+        <svg class="icon"><use href="#icon-close"></use></svg>
+      </div>
+
+      <div class="browser__toolbar">
+        <svg class="icon"><use href="#icon-arrow-left"></use></svg>
+        <svg class="icon"><use href="#icon-arrow-right"></use></svg>
+        <svg class="icon"><use href="#icon-refresh"></use></svg>
+        <input type="search" class="browser__search" placeholder="https://">
+        <svg class="icon"><use href="#icon-ellipsis-vertical"></use></svg>
+      </div>
+    </div>
   </div>
 
 </body>
 </html>
 
 <script>
+// Note: Add user-select: none to a master CSS class(?)
 
-// Edit mode - Handle double click input
+// BUGS -- can delete child elements. Fix -- disable editing (read only?) for child divs.
+  // Alternative solution: Enable some kind of read-only mode (doesn't exist), or clone the contents and edit that, then paste it back in. Or another more effective solution?
+
+// Edit mode - Handle mouse click input
 document.getElementById('canvas').onclick = event => {
    if (event.detail === 1) {
-     // it was a single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesnt'.
+     // Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't.
      if(document.activeElement === document.getElementById('canvas')){
         exitEdit(); // this function is buggy
      }
    } else if (event.detail === 2) {
+     // Register double click.
      enterEdit();
    }
 };
 
 // Edit mode - Handle keyboard input
-document.addEventListener("keydown", editKeyDown);
+document.addEventListener("keydown", handleInput);
 
-function editKeyDown(e) {
-  console.log("editKeyDown");
-  if(event.key === "F2"){
-    console.log("f2");
+function handleInput(e) {
+  if(event.key === "F2" || event.key === "Enter"){
+    console.log("Enter edit mode");
+    e.preventDefault(); // to prevent Enter from creating a new div (bug?)
     enterEdit();
   }
 
-  // This should cancel edits as well -- research this
-  if(event.key === "Escape"){
-    console.log("esc");
+  // This should cancel edits as well -- improve this. BUG -- CTRL+Enter does not work.
+  if(event.key === "Escape" || event.key === "Enter" && event.key === "Control"){
+    console.log("Exit edit mode");
     exitEdit();
   }
+
+  // Add if CTRL+Enter, exitEdit
 }
 
 // Toggle edit mode. TEST -- does this work for SVGs?
@@ -57,7 +78,10 @@ function exitEdit() {
   console.log("blur");
   document.activeElement.contentEditable = false;
   document.activeElement.blur();
+  //BUG -- but hitting F2 or enter still works
 }
 
-
+// next steps
+// 1 test moveable with edit
+// Test moveable's keybinding and click binding system
 </script>
