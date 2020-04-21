@@ -468,15 +468,15 @@
 					<section>
 						<h3>No borders</h3>
 
-						<div class="browser browser--no-borders">
+						<div class="browser browser--no-borders editable">
 							<div class="browser__header">
-								<h2 class="browser__title">Webpage title</h2>
+								<h2 class="browser__title" id="input1">Webpage title</h2>
 								<svg class="icon"><use href="#icon-minus"></use></svg>
 								<svg class="icon"><use href="#icon-square"></use></svg>
 								<svg class="icon"><use href="#icon-close"></use></svg>
 							</div>
 
-							<div class="browser__toolbar">
+							<div class="browser__toolbar" id="input2">
 								<svg class="icon"><use href="#icon-arrow-left"></use></svg>
 								<svg class="icon"><use href="#icon-arrow-right"></use></svg>
 								<svg class="icon"><use href="#icon-refresh"></use></svg>
@@ -3295,41 +3295,23 @@
 
 
 		<script>
+		//EDIT MODE FEATURE
+
 		//note -- all components need a "user-select: none; css property"
 
-		//IMPORTANT: Big re-write is to change the double click event listener to a smarter one that can differentiate between a single double-click. This is needed so that document.activeElement can be used. The first click tells the script which component has been clicked on and designates that as the 'activeElement'.
-			//Another way of doing this is using event.target.closest as an event target. This also requires a smarter parent event handler (either on the parent div or the document object) that can differentiaet between a single and double click.
+		//IMPORTANT: Big re-write was to change the double click event listener to a smarter one that can differentiate between a single double-click.
+			//Must add 'editable' class to parent parentNode
+			//Must add 'input' class to child nodes that are editable (buggy. WIP)
 
-
-		//convert input field names from specific to generic (e.g. browser title -> input 1)
-		//copy innerHTML (default text) of element to editor
-		//implement event delegation
-			//add 'canvas div'
+		//BUG - change inputs from id to class, so that they don't conflict.
 
 		//extend inputs
 			//add keyboard inputs
 				//add ctrl+enter to confirm
 				//make esc cancel
 
-				let component = '';
-
-				document.getElementById('canvas').onclick = event => {
-					if(event.target && event.target.closest(".editable")) {
-						console.log("List item ", event.target, " was clicked!");
-						if (event.detail === 2) {
-							// Register double click.
-							component = event.target;
-							openEditor();
-						}
-					}
-					else if(document.activeElement === document.getElementById('canvas')){
-						if (event.detail === 1) {
-							// Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't.
-							exitEdit(); // this function is buggy
-						}
-					}
-				};
-
+				// Declare variables
+				let component = ''; // initialize component var. Not needed. Study WHY.
 				var canvas = document.getElementById('canvas'); // only works if double click listener is on a parent canvas div
 
 				//to-do -- set a var = to number of input fields. Then add classes to each one if needed? Figure out naming convention.
@@ -3341,6 +3323,33 @@
 
 				// Consider adding a '+' and '-' button fixed on the editor to allow user to app or remove child input divs
 
+				// Helper function to find closest parent node of event.target
+				var getClosest = function (elem, selector) {
+					for ( ; elem && elem !== document; elem = elem.parentNode ) {
+						if ( elem.matches( selector ) ) return elem;
+					}
+					return null;
+				};
+
+				// Input code
+				document.getElementById('canvas').onclick = event => {
+					if(event.target && event.target.closest(".editable")) { // but also sets component = to child divs. I don't want that. matches only works if browser item is clicked.
+						console.log("List item ", event.target, " was clicked!");
+						if (event.detail === 2) {
+							// Register double click.
+							component = getClosest(event.target, '.editable'); // sets component = to closest parent node with 'editable' class
+							openEditor();
+						}
+					}
+					else if(document.activeElement === document.getElementById('canvas')){
+						if (event.detail === 1) {
+							// Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't.
+							exitEdit(); // this function is buggy
+						}
+					}
+				};
+
+				// Editor code
 
 				var editor = document.getElementById('editor'); //try changing to document.activeElement();
 				// canvas.addEventListener("dblclick", openEditor); //moved this to canvas (parent) div above
