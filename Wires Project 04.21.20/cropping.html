@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" class="sketch">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="theme-color" content="#ffffff">
+		<title>Cropping</title>
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#333333">
+		<link href="css/components.css" rel="stylesheet">
+		<link href="css/docs.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<header>
+			<nav>
+				<div class="menu-bar menu-bar--icon-left">
+					<a>
+						<svg class="icon"><use href="#icon-placeholder"></use></svg>
+						<span class="menu-bar__text">Wires</span>
+					</a>
+					<a href="components.html">
+						<span class="menu-bar__text">Components</span>
+					</a>
+					<a href="colors.html">
+						<span class="menu-bar__text">Colors</span>
+					</a>
+					<a href="cropping.html" class="active">
+						<span class="menu-bar__text">Cropping</span>
+					</a>
+					
+					<form name="myForm">
+						<label>
+							<input type="radio" name="wireframeStyle" value="sketch" checked>
+							Sketch
+						</label>
+
+						<label>
+							<input type="radio" name="wireframeStyle" value="clean">
+							Clean
+						</label>
+					</form>
+				</div>
+			</nav>
+		</header>
+		
+		
+		<main class="doc-content">
+			<h1>Cropping</h1>
+			
+			<p style="position: relative; z-index: 99999">
+				<button type="button" id="btn-crop-mode">1. Simulate going into crop mode</button>
+				<button type="button" id="btn-cropping">2. Simulate cropping to 100x75px</button>
+				<button type="button" id="btn-apply-cropping">3. Apply cropping</button>
+			</p>
+
+			<ul class="accordion" id="accordionOne">
+				<li class="accordion__item accordion__item--opened">
+					<a class="accordion__text active">
+						<svg class="icon"><use href="#icon-minus"></use></svg>
+						Item one
+					</a>
+					<ul class="accordion__submenu">
+						<li class="accordion__item">
+							<a class="accordion__text">Sub-item one</a>
+						</li>
+						<li class="accordion__item">
+							<a class="accordion__text active">Sub-item two</a>
+						</li>
+						<li class="accordion__item">
+							<a class="accordion__text">Sub-item three</a>
+						</li>
+					</ul>
+				</li>
+				<li class="accordion__item">
+					<a class="accordion__text">
+						<svg class="icon"><use href="#icon-plus"></use></svg>
+						Item two
+					</a>
+				</li>
+				<li class="accordion__item">
+					<a class="accordion__text">
+						<svg class="icon"><use href="#icon-plus"></use></svg>
+						Item three
+					</a>
+				</li>
+			</ul>
+		</main>
+		
+		
+		<div class="cropper">
+			<span class="cropper__top-left"></span>
+			<span class="cropper__top-middle"></span>
+			<span class="cropper__top-right"></span>
+			
+			<span class="cropper__middle-left"></span>
+			<span class="cropper__middle-right"></span>
+			
+			<span class="cropper__bottom-left"></span>
+			<span class="cropper__bottom-middle"></span>
+			<span class="cropper__bottom-right"></span>
+		</div>
+		
+		
+		<script src="js/sprite.js"></script>
+		
+		<script>
+			var component = document.getElementById("accordionOne");
+			var cropper = document.querySelector(".cropper");
+			var rect = component.getClientRects()[0];
+
+			
+			document.getElementById('btn-crop-mode').addEventListener('click', function () {
+				cropper.style.cssText = "display: block; top:" + (document.documentElement.scrollTop + rect.top) + "px; left:" + (document.documentElement.scrollLeft + rect.left) + "px; width:" + rect.width + "px; height:" + rect.height + "px";
+			});
+			
+			document.getElementById('btn-cropping').addEventListener('click', function () {
+				cropper.style.cssText = "display: block; top:" + (document.documentElement.scrollTop + rect.top) + "px; left:" + (document.documentElement.scrollLeft + rect.left) + "px; width: 100px; height:75px";
+			});
+			
+			document.getElementById('btn-apply-cropping').addEventListener('click', function () {
+				cropper.style.cssText = "display: none";
+				component.style.cssText = "clip-path: polygon(0 0, 100px 0, 100px 75px, 0 75px); -webkit-clip-path: polygon(0 0, 100px 0, 100px 75px, 0 75px)";
+			});
+			
+			
+			
+			
+			var rad = document.myForm.wireframeStyle;
+			var prev = null;
+			var htmlTag = document.documentElement;
+			
+			for (var i = 0; i < rad.length; i++) {
+				rad[i].addEventListener('change', function() {
+					if (this.value == "clean") {
+						htmlTag.classList.toggle(this.value);
+					}
+					else{
+						htmlTag.classList.remove("clean");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+	<title>Placeholder image</title>
+	<g stroke="#333">
+		<line x1="3.5" y1="3.5" x2="96.5" y2="96.5" vector-effect="non-scaling-stroke"/>
+		<line x1="96.5" y1="3.5" x2="3.5" y2="96.5" vector-effect="non-scaling-stroke"/>
+	</g>
+</svg>

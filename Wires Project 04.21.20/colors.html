@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" class="sketch">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="theme-color" content="#ffffff">
+		<title>Colors</title>
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#333333">
+		<link href="css/components.css" rel="stylesheet">
+		<link href="css/docs.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<header>
+			<nav>
+				<div class="menu-bar menu-bar--icon-left">
+					<a>
+						<svg class="icon"><use href="#icon-placeholder"></use></svg>
+						<span class="menu-bar__text">Wires</span>
+					</a>
+					<a href="components.html">
+						<span class="menu-bar__text">Components</span>
+					</a>
+					<a href="colors.html" class="active">
+						<span class="menu-bar__text">Colors</span>
+					</a>
+					<a href="cropping.html">
+						<span class="menu-bar__text">Cropping</span>
+					</a>
+					
+					<form name="myForm">
+						<label>
+							<input type="radio" name="wireframeStyle" value="sketch" checked>
+							Sketch
+						</label>
+
+						<label>
+							<input type="radio" name="wireframeStyle" value="clean">
+							Clean
+						</label>
+					</form>
+				</div>
+			</nav>
+		</header>
+		
+		
+		<main class="doc-content">
+			<h1>Colors</h1>
+			
+			<div class="color-palette">
+				<div class="color-palette__swatches">
+					<div style="background-color: var(--black)"></div>
+					<div style="background-color: var(--gray1)"></div>
+					<div style="background-color: var(--gray2)"></div>
+					<div style="background-color: var(--gray3)"></div>
+					<div style="background-color: var(--gray4)"></div>
+					<div style="background-color: var(--gray5)"></div>
+					<div style="background-color: var(--gray6)"></div>
+					<div style="background-color: var(--white)"></div>
+				
+					<div style="background-color: var(--red)"></div>
+					<div style="background-color: var(--orange)"></div>
+					<div style="background-color: var(--yellow)"></div>
+					<div style="background-color: var(--green)"></div>
+					<div style="background-color: var(--teal)"></div>
+					<div style="background-color: var(--blue)"></div>
+					<div style="background-color: var(--purple)"></div>
+					<div style="background-color: var(--pink)"></div>
+				
+					<div style="background-color: var(--red2)"></div>
+					<div style="background-color: var(--orange2)"></div>
+					<div style="background-color: var(--yellow2)"></div>
+					<div style="background-color: var(--green2)"></div>
+					<div style="background-color: var(--teal2)"></div>
+					<div style="background-color: var(--blue2)"></div>
+					<div style="background-color: var(--purple2)"></div>
+					<div style="background-color: var(--pink2)"></div>
+				
+					<div style="background-color: var(--red3)"></div>
+					<div style="background-color: var(--orange3)"></div>
+					<div style="background-color: var(--yellow3)"></div>
+					<div style="background-color: var(--green3)"></div>
+					<div style="background-color: var(--teal3)"></div>
+					<div style="background-color: var(--blue3)"></div>
+					<div style="background-color: var(--purple3)"></div>
+					<div style="background-color: var(--pink3)"></div>
+
+					<div style="background-color: var(--red4)"></div>
+					<div style="background-color: var(--orange4)"></div>
+					<div style="background-color: var(--yellow4)"></div>
+					<div style="background-color: var(--green4)"></div>
+					<div style="background-color: var(--teal4)"></div>
+					<div style="background-color: var(--blue4)"></div>
+					<div style="background-color: var(--purple4)"></div>
+					<div style="background-color: var(--pink4)"></div>
+				
+					<div style="background-color: var(--red5)"></div>
+					<div style="background-color: var(--orange5)"></div>
+					<div style="background-color: var(--yellow5)"></div>
+					<div style="background-color: var(--green5)"></div>
+					<div style="background-color: var(--teal5)"></div>
+					<div style="background-color: var(--blue5)"></div>
+					<div style="background-color: var(--purple5)"></div>
+					<div style="background-color: var(--pink5)"></div>
+				</div>
+				
+				<h3 style="text-transform: uppercase; margin: 1.25rem 0 .25rem; font-size: .875rem">Recent</h3>
+				<div class="color-palette__swatches">
+					<div style="background-color: var(--blue)"></div>
+					<div style="background-color: var(--purple3)"></div>
+				</div>
+			</div>
+		</main>
+		
+		
+		<script src="js/sprite.js"></script>
+		<script>
+			var rad = document.myForm.wireframeStyle;
+			var prev = null;
+			var htmlTag = document.documentElement;
+			
+			for (var i = 0; i < rad.length; i++) {
+				rad[i].addEventListener('change', function() {
+					if (this.value == "clean") {
+						htmlTag.classList.toggle(this.value);
+					}
+					else{
+						htmlTag.classList.remove("clean");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

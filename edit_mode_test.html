@@ -7,7 +7,7 @@
 </head>
 <body>
   <div id="canvas" class="canvas">
-    <div class="browser item"> <!--browser-->
+    <div class="browser item editable"> <!--browser-->
       <div class="browser__header">
         <h2 class="browser__title">Webpage title</h2>
         <svg class="icon"><use href="#icon-minus"></use></svg>
@@ -31,7 +31,9 @@
 <script>
 // Note: Add user-select: none to a master CSS class(?)
 
-// BUGS -- can delete child elements. Fix -- disable editing (read only?) for child divs.
+// Add class: Editable (don't use forEach).
+
+// BUGS -- can delete child elements. Fix -- disable editing (read only? Esp. for icons) for child divs. Increases overhead to set up div attributes.
   // Alternative solution: Enable some kind of read-only mode (doesn't exist), or clone the contents and edit that, then paste it back in. Or another more effective solution?
 
 // Edit mode - Handle mouse click input
@@ -43,24 +45,37 @@ document.getElementById('canvas').onclick = event => {
      }
    } else if (event.detail === 2) {
      // Register double click.
-     enterEdit();
+     if(event.target && event.target.closest(".editable")) {
+       console.log("List item ", event.target.classList, " was clicked!");
+       enterEdit();
+     }
    }
 };
+
+
 
 // Edit mode - Handle keyboard input
 document.addEventListener("keydown", handleInput);
 
 function handleInput(e) {
-  if(event.key === "F2" || event.key === "Enter"){
+  if(event.key === "F2" || event.key === "Enter" && event.key !== "Control" ){ //BUG -- doesn't work.
     console.log("Enter edit mode");
     e.preventDefault(); // to prevent Enter from creating a new div (bug?)
     enterEdit();
   }
 
-  // This should cancel edits as well -- improve this. BUG -- CTRL+Enter does not work.
-  if(event.key === "Escape" || event.key === "Enter" && event.key === "Control"){
+  // This should cancel edits as well -- improve this.
+  if(event.key === "Escape"){
     console.log("Exit edit mode");
     exitEdit();
+  }
+
+  //BUG -- CTRL+Enter to exit edit mode does not work.
+  if(event.key === "Control"){
+    if(event.key === "Enter"){
+      console.log("Exit edit mode");
+      exitEdit();
+    }
   }
 
   // Add if CTRL+Enter, exitEdit
@@ -82,6 +97,6 @@ function exitEdit() {
 }
 
 // next steps
-// 1 test moveable with edit
+// test moveable with edit
 // Test moveable's keybinding and click binding system
 </script>
