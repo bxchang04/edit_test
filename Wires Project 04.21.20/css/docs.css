@@ -264,6 +264,8 @@ body > header form label{
 .doc-content{
 	padding: 2.5rem 2.5rem 2.5rem 15rem;
 	user-select: none;
+	background-color: gray;
+
 }
 
 .doc-content > h1{

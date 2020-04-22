@@ -470,17 +470,17 @@
 
 						<div class="browser browser--no-borders editable">
 							<div class="browser__header">
-								<h2 class="browser__title" id="input1">Webpage title</h2>
+								<h2 class="browser__title input1" id="input1">Webpage title</h2>
 								<svg class="icon"><use href="#icon-minus"></use></svg>
 								<svg class="icon"><use href="#icon-square"></use></svg>
 								<svg class="icon"><use href="#icon-close"></use></svg>
 							</div>
 
-							<div class="browser__toolbar" id="input2">
+							<div class="browser__toolbar">
 								<svg class="icon"><use href="#icon-arrow-left"></use></svg>
 								<svg class="icon"><use href="#icon-arrow-right"></use></svg>
 								<svg class="icon"><use href="#icon-refresh"></use></svg>
-								<div class="browser__search">https://</div>
+								<div class="browser__search input2" id="input2">https://</div>
 								<svg class="icon"><use href="#icon-ellipsis-vertical"></use></svg>
 							</div>
 						</div>
@@ -3316,8 +3316,8 @@
 
 				//to-do -- set a var = to number of input fields. Then add classes to each one if needed? Figure out naming convention.
 				// add for loop and if statment -- if input[i], set var inputX = document.getElementByID --> querySelector('inputX') [but classes are less performant than ID]
-				var input1 = document.getElementById('input1'); //change to class? Since IDs have to be unique
-				var input2 = document.getElementById('input2'); //change to class? Since IDs have to be unique
+				var input1 = ''; //document.getElementByID('input1') works for some reason
+				var input2 = '';
 				// Add more 'inputX' as needed here.
 				// ...
 
@@ -3334,16 +3334,22 @@
 				// Input code
 				document.getElementById('canvas').onclick = event => {
 					if(event.target && event.target.closest(".editable")) { // but also sets component = to child divs. I don't want that. matches only works if browser item is clicked.
-						console.log("List item ", event.target, " was clicked!");
 						if (event.detail === 2) {
 							// Register double click.
 							component = getClosest(event.target, '.editable'); // sets component = to closest parent node with 'editable' class
+							input1 = component.getElementsByClassName('.input1'); //change to class? Or do first child where class contains 'input', second child, etc.
+							input2 = component.getElementsByClassName('.input2'); //change to class?
+							//set rest of inputs here
+							console.log("event.target = " + event.target);
+							console.log("component = " + component);
+							console.log("input1 = " + input1.textContent);
+							console.log("input2 = " + input2.textContent);
 							openEditor();
 						}
 					}
 					else if(document.activeElement === document.getElementById('canvas')){
 						if (event.detail === 1) {
-							// Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't.
+							// Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't. It will unfocus though. Test this.
 							exitEdit(); // this function is buggy
 						}
 					}
@@ -3351,21 +3357,19 @@
 
 				// Editor code
 
-				var editor = document.getElementById('editor'); //try changing to document.activeElement();
-				// canvas.addEventListener("dblclick", openEditor); //moved this to canvas (parent) div above
+				var editor = document.getElementById('editor');
+
 				editor.addEventListener("change", updateEditor);
 
-				function openEditor(e) {
-					console.log("component = " + component);
-
-					var rect = component.getBoundingClientRect(); //change browser to target
+				function openEditor() {
+					var rect = component.getBoundingClientRect();
 
 					editor.style.top = component.offsetTop + "px";
 					editor.style.left = rect.left + "px";
 					editor.style.width = rect.width + "px";
 					editor.style.height = rect.height + "px";
 					editor.focus();
-					editor.value = input1.textContent + "\n" + input2.textContent; // BUG -- shows too many line breaks. Fix -- only textContent or InnerHTML of input divs and then concatenate them with line breaks (\n)
+					editor.value = input1.textContent + "\n" + input2.textContent; // MAKE THIS DYNAMIC
 					editor.select();
 				}
 
@@ -3373,11 +3377,10 @@
 					var editorValue = editor.value;
 
 					var newInput1 = editorValue.slice(0, editor.value.indexOf("\n")); //BUG -- parses last letter of input1 if newInput2 is blank
-					var newInput2 = editorValue.includes("\n")? editorValue.slice(editor.value.indexOf("\n")) : "";
+					var newInput2 = editorValue.includes("\n") ? editorValue.slice(editor.value.indexOf("\n")) : "";
 
-					console.log("orig = " + input1);
+					console.log("orig = " + input1.textContent);
 					console.log("new = " + newInput1, newInput2);
-
 
 					input1.textContent = newInput1;
 					input2.textContent = newInput2;

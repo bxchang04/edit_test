@@ -1,3 +1,5 @@
+html, body {
+}
 :root {
   --font-family: 'Gaegu', sans-serif;
   /* Grayscale */
@@ -337,7 +339,7 @@ svg {
   height: var(--browser-height);
   overflow: hidden;
   border: 2px solid var(--component-border-color);
-  background-color: var(--component-bg);
+  background-color: var(--gray3);
   border-radius: var(--border-radius-sm); }
   .browser .icon {
     color: var(--gray4); }
