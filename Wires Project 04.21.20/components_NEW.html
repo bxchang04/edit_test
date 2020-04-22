@@ -449,7 +449,7 @@
 
 						<div class="browser editable" id="component1">
 							<div class="browser__header">
-								<h2 class="browser__title" id="input1">Webpage title</h2>
+								<h2 class="browser__title input1">Webpage title</h2>
 								<svg class="icon"><use href="#icon-minus"></use></svg>
 								<svg class="icon"><use href="#icon-square"></use></svg>
 								<svg class="icon"><use href="#icon-close"></use></svg>
@@ -459,7 +459,7 @@
 								<svg class="icon"><use href="#icon-arrow-left"></use></svg>
 								<svg class="icon"><use href="#icon-arrow-right"></use></svg>
 								<svg class="icon"><use href="#icon-refresh"></use></svg>
-								<div class="browser__search" id="input2">https://</div>
+								<div class="browser__search input2">https://</div>
 								<svg class="icon"><use href="#icon-ellipsis-vertical"></use></svg>
 							</div>
 						</div>
@@ -470,7 +470,7 @@
 
 						<div class="browser browser--no-borders editable">
 							<div class="browser__header">
-								<h2 class="browser__title input1" id="input1">Webpage title</h2>
+								<h2 class="browser__title input1">Webpage title</h2>
 								<svg class="icon"><use href="#icon-minus"></use></svg>
 								<svg class="icon"><use href="#icon-square"></use></svg>
 								<svg class="icon"><use href="#icon-close"></use></svg>
@@ -480,7 +480,7 @@
 								<svg class="icon"><use href="#icon-arrow-left"></use></svg>
 								<svg class="icon"><use href="#icon-arrow-right"></use></svg>
 								<svg class="icon"><use href="#icon-refresh"></use></svg>
-								<div class="browser__search input2" id="input2">https://</div>
+								<div class="browser__search input2">https://</div>
 								<svg class="icon"><use href="#icon-ellipsis-vertical"></use></svg>
 							</div>
 						</div>
@@ -3301,9 +3301,9 @@
 
 		//IMPORTANT: Big re-write was to change the double click event listener to a smarter one that can differentiate between a single double-click.
 			//Must add 'editable' class to parent parentNode
-			//Must add 'input' class to child nodes that are editable (buggy. WIP)
+			//Must add 'inputX' class to child nodes that are editable (Can this work as just input?)
 
-		//BUG - change inputs from id to class, so that they don't conflict.
+//BUG -- input1 parses last letter of input1 if newInput2 is blank
 
 		//extend inputs
 			//add keyboard inputs
@@ -3312,7 +3312,7 @@
 
 				// Declare variables
 				let component = ''; // initialize component var. Not needed. Study WHY.
-				var canvas = document.getElementById('canvas'); // only works if double click listener is on a parent canvas div
+				var canvas = document.getElementById('canvas');
 
 				//to-do -- set a var = to number of input fields. Then add classes to each one if needed? Figure out naming convention.
 				// add for loop and if statment -- if input[i], set var inputX = document.getElementByID --> querySelector('inputX') [but classes are less performant than ID]
@@ -3333,24 +3333,23 @@
 
 				// Input code
 				document.getElementById('canvas').onclick = event => {
-					if(event.target && event.target.closest(".editable")) { // but also sets component = to child divs. I don't want that. matches only works if browser item is clicked.
+					if(event.target && event.target.closest(".editable")) {
 						if (event.detail === 2) {
 							// Register double click.
-							component = getClosest(event.target, '.editable'); // sets component = to closest parent node with 'editable' class
-							input1 = component.getElementsByClassName('.input1'); //change to class? Or do first child where class contains 'input', second child, etc.
-							input2 = component.getElementsByClassName('.input2'); //change to class?
+							// Set component and inputs = to closest  parent node with 'editable' class and its children
+							component = getClosest(event.target, '.editable');
+							// *** - replace below with for loop? i = elements, if classList.contains(".input"), set input[i] = element.
+							input1 = component.querySelector('.input1');
+							input2 = component.querySelector('.input2');
 							//set rest of inputs here
-							console.log("event.target = " + event.target);
-							console.log("component = " + component);
-							console.log("input1 = " + input1.textContent);
-							console.log("input2 = " + input2.textContent);
+
 							openEditor();
 						}
 					}
-					else if(document.activeElement === document.getElementById('canvas')){
+					else if(event.target && event.target.closest(".canvas")){
 						if (event.detail === 1) {
-							// Register single click. Single click on canvas should exit edit. BUG -- this single click should blur but doesn't. It will unfocus though. Test this.
-							exitEdit(); // this function is buggy
+							// Register single click. Single click on canvas should exit edit. Test this.
+							cancelEdit(); // ***this is exitEdit but also must set inputs to ""
 						}
 					}
 				};
@@ -3369,18 +3368,22 @@
 					editor.style.width = rect.width + "px";
 					editor.style.height = rect.height + "px";
 					editor.focus();
-					editor.value = input1.textContent + "\n" + input2.textContent; // MAKE THIS DYNAMIC
+					editor.value = input1.textContent + "\n" + input2.textContent; // *** make this dynamic -- needs to account for more than 2 inputs
 					editor.select();
 				}
 
+				// *** make this dynamic -- needs to account for more than 2 inputs
 				function updateEditor() {
 					var editorValue = editor.value;
 
-					var newInput1 = editorValue.slice(0, editor.value.indexOf("\n")); //BUG -- parses last letter of input1 if newInput2 is blank
-					var newInput2 = editorValue.includes("\n") ? editorValue.slice(editor.value.indexOf("\n")) : "";
-
-					console.log("orig = " + input1.textContent);
-					console.log("new = " + newInput1, newInput2);
+					if(editorValue.includes("\n")){
+						var newInput1 = editorValue.slice(0, editor.value.indexOf("\n"));
+						var newInput2 = editorValue.slice(editor.value.indexOf("\n"));
+					}
+					else{
+						var newInput1 = editorValue;
+						var newInput2 = "";
+					}
 
 					input1.textContent = newInput1;
 					input2.textContent = newInput2;
