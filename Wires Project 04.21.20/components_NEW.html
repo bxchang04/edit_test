@@ -3297,98 +3297,116 @@
 		<script>
 		//EDIT MODE FEATURE
 
-		//note -- all components need a "user-select: none; css property"
-
 		//IMPORTANT: Big re-write was to change the double click event listener to a smarter one that can differentiate between a single double-click.
+			//Must add "user-select: none; css property" to all components
 			//Must add 'editable' class to parent parentNode
 			//Must add 'inputX' class to child nodes that are editable (Can this work as just input?)
 
-//BUG -- input1 parses last letter of input1 if newInput2 is blank
+			// Declare variables
+			let component = ''; // initialize component var. Not needed. Study WHY.
+			var canvas = document.getElementById('canvas');
 
-		//extend inputs
-			//add keyboard inputs
-				//add ctrl+enter to confirm
-				//make esc cancel
+			//to-do -- set a var = to number of input fields. Then add classes to each one if needed? Figure out naming convention.
+			// add for loop and if statment -- if input[i], set var inputX = document.getElementByID --> querySelector('inputX') [but classes are less performant than ID]
+			var input1 = ''; //document.getElementByID('input1') works for some reason
+			var input2 = '';
+			// Add more 'inputX' as needed here.
+			// ...
 
-				// Declare variables
-				let component = ''; // initialize component var. Not needed. Study WHY.
-				var canvas = document.getElementById('canvas');
+			// Consider adding a '+' and '-' button fixed on the editor to allow user to app or remove child input divs
 
-				//to-do -- set a var = to number of input fields. Then add classes to each one if needed? Figure out naming convention.
-				// add for loop and if statment -- if input[i], set var inputX = document.getElementByID --> querySelector('inputX') [but classes are less performant than ID]
-				var input1 = ''; //document.getElementByID('input1') works for some reason
-				var input2 = '';
-				// Add more 'inputX' as needed here.
-				// ...
+			// Helper function to find closest parent node of event.target
+			var getClosest = function (elem, selector) {
+				for ( ; elem && elem !== document; elem = elem.parentNode ) {
+					if ( elem.matches( selector ) ) return elem;
+				}
+				return null;
+			};
 
-				// Consider adding a '+' and '-' button fixed on the editor to allow user to app or remove child input divs
+			// Helper function to set components
+			function setComponent() {
+				// Set component and inputs = to closest  parent node with 'editable' class and its children
+				component = getClosest(event.target, '.editable');
+				// *** - replace below with for loop? i = elements, if classList.contains(".input"), set input[i] = element.
+				input1 = component.querySelector('.input1');
+				input2 = component.querySelector('.input2');
+				//set rest of inputs here
+			}
 
-				// Helper function to find closest parent node of event.target
-				var getClosest = function (elem, selector) {
-					for ( ; elem && elem !== document; elem = elem.parentNode ) {
-						if ( elem.matches( selector ) ) return elem;
+			// Helper function to revert components
+			function revertInputs() {
+				input1 = input1.textContent;
+				input2 = input2.textContent;
+				//set rest of inputs here
+			}
+
+			// Mouse Input code
+			document.getElementById('canvas').onclick = event => {
+				if(event.target && event.target.closest(".editable")) {
+					if (event.detail === 1) {
+						setComponent();
 					}
-					return null;
-				};
-
-				// Input code
-				document.getElementById('canvas').onclick = event => {
-					if(event.target && event.target.closest(".editable")) {
-						if (event.detail === 2) {
-							// Register double click.
-							// Set component and inputs = to closest  parent node with 'editable' class and its children
-							component = getClosest(event.target, '.editable');
-							// *** - replace below with for loop? i = elements, if classList.contains(".input"), set input[i] = element.
-							input1 = component.querySelector('.input1');
-							input2 = component.querySelector('.input2');
-							//set rest of inputs here
-
-							openEditor();
-						}
+					if (event.detail === 2) {
+						// Register double click.
+						openEditor();
 					}
-					else if(event.target && event.target.closest(".canvas")){
-						if (event.detail === 1) {
-							// Register single click. Single click on canvas should exit edit. Test this.
-							cancelEdit(); // ***this is exitEdit but also must set inputs to ""
-						}
-					}
-				};
+				}
+			};
 
-				// Editor code
+			// Keyboard Input code
+			document.addEventListener("keydown", handleInput);
 
-				var editor = document.getElementById('editor');
+			function handleInput(e) {
+			  // if(event.key === "F2" || event.key === "Enter" && event.key !== "Control" ){ //BUG -- conflict with adding carriage return in edit mode.
+			  if(event.key === "F2" ){
+			    openEditor();
+			  }
 
-				editor.addEventListener("change", updateEditor);
+			  // This should cancel edits as well -- improve this.
+			  if(event.key === "Escape"){
+					revertInputs();
+					editor.blur(); //doesn't work
+			  }
 
-				function openEditor() {
-					var rect = component.getBoundingClientRect();
+			  if(event.key === "Enter" && event.ctrlKey){
+		      editor.blur();
+		    }
+			}
 
-					editor.style.top = component.offsetTop + "px";
-					editor.style.left = rect.left + "px";
-					editor.style.width = rect.width + "px";
-					editor.style.height = rect.height + "px";
-					editor.focus();
-					editor.value = input1.textContent + "\n" + input2.textContent; // *** make this dynamic -- needs to account for more than 2 inputs
-					editor.select();
+			// Editor code
+			var editor = document.getElementById('editor');
+
+			editor.addEventListener("change", updateEditor);
+
+			function openEditor() {
+				var rect = component.getBoundingClientRect();
+
+				editor.style.top = component.offsetTop + "px";
+				editor.style.left = rect.left + "px";
+				editor.style.width = rect.width + "px";
+				editor.style.height = rect.height + "px";
+				editor.focus();
+				editor.value = input1.textContent + "\n" + input2.textContent; // *** make this dynamic -- needs to account for more than 2 inputs
+				editor.select();
+			}
+
+			// *** make this dynamic -- needs to account for more than 2 inputs
+			function updateEditor() {
+				var editorValue = editor.value;
+
+				if(editorValue.includes("\n")){
+					var newInput1 = editorValue.slice(0, editor.value.indexOf("\n"));
+					var newInput2 = editorValue.slice(editor.value.indexOf("\n"));
+				}
+				else{
+					var newInput1 = editorValue;
+					var newInput2 = "";
 				}
 
-				// *** make this dynamic -- needs to account for more than 2 inputs
-				function updateEditor() {
-					var editorValue = editor.value;
-
-					if(editorValue.includes("\n")){
-						var newInput1 = editorValue.slice(0, editor.value.indexOf("\n"));
-						var newInput2 = editorValue.slice(editor.value.indexOf("\n"));
-					}
-					else{
-						var newInput1 = editorValue;
-						var newInput2 = "";
-					}
-
-					input1.textContent = newInput1;
-					input2.textContent = newInput2;
-					//add more using for loop
-				}
+				input1.textContent = newInput1;
+				input2.textContent = newInput2;
+				//add more using for loop
+			}
 		</script>
 	</body>
 </html>
