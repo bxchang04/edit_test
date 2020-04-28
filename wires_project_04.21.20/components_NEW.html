@@ -485,10 +485,8 @@
 							</div>
 						</div>
 					</section>
-				</div>
-
-			</section>
-
+				</section>
+			</div>
 <!--
 
 			<section id="button-section">
@@ -3301,6 +3299,9 @@
 			//Must add "user-select: none; css property" to all components
 			//Must add 'editable' class to parent parentNode
 			//Must add 'inputX' class to child nodes that are editable (Can this work as just input?)
+			//Must add one parent div with class 'canvas' to contain the components to act as the event handler
+			//Add an editor HTML component
+			//Add editor CSS styling
 
 			// Declare variables
 			let component = ''; // initialize component var. Not needed. Study WHY.
@@ -3313,10 +3314,10 @@
 			// Add more 'inputX' as needed here.
 			// ...
 
-			// Consider adding a '+' and '-' button fixed on the editor to allow user to app or remove child input divs
+			// Consider adding a '+' and '-' button fixed on the editor to allow user to add or remove child input divs
 
-			// Helper function to find closest parent node of event.target
-			var getClosest = function (elem, selector) {
+			// Helper function to find closest parent node of event.target. Note: Despite HTML Search being several layers down, this still works for browser parent. Not sure why it does, but it's important that this works.
+			var getClosestParent = function (elem, selector) {
 				for ( ; elem && elem !== document; elem = elem.parentNode ) {
 					if ( elem.matches( selector ) ) return elem;
 				}
@@ -3326,7 +3327,7 @@
 			// Helper function to set components
 			function setComponent() {
 				// Set component and inputs = to closest  parent node with 'editable' class and its children
-				component = getClosest(event.target, '.editable');
+				component = getClosestParent(event.target, '.editable');
 				// *** - replace below with for loop? i = elements, if classList.contains(".input"), set input[i] = element.
 				input1 = component.querySelector('.input1');
 				input2 = component.querySelector('.input2');
@@ -3357,15 +3358,13 @@
 			document.addEventListener("keydown", handleInput);
 
 			function handleInput(e) {
-			  // if(event.key === "F2" || event.key === "Enter" && event.key !== "Control" ){ //BUG -- conflict with adding carriage return in edit mode.
 			  if(event.key === "F2" ){
 			    openEditor();
 			  }
 
-			  // This should cancel edits as well -- improve this.
 			  if(event.key === "Escape"){
 					revertInputs();
-					editor.blur(); //doesn't work
+					editor.blur();
 			  }
 
 			  if(event.key === "Enter" && event.ctrlKey){
